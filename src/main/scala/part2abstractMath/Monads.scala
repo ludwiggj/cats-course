@@ -42,6 +42,10 @@ object Monads {
   trait MyMonad[M[_]] {
     def pure[A](value: A): M[A]
     def flatMap[A, B](ma: M[A])(f: A => M[B]): M[B]
+
+    // implement map method in MyMonad - monads are functors!
+    def map[A, B](ma: M[A])(f: A => B): M[B] =
+      flatMap(ma)(a => pure(f(a)))
   }
 
   import cats.Monad
@@ -76,6 +80,35 @@ object Monads {
   def getPairs[M[_], A, B](ma: M[A], mb: M[B])(implicit monad: Monad[M]): M[(A, B)] =
     monad.flatMap(ma)(a => monad.map(mb)(b => (a, b)))
 
+  // extension methods
+  import cats.syntax.applicative._ // pure
+  val oneOption: Option[Int] = 1.pure[Option] // implicit Monad[Option] is used, Some(1)
+  val oneList: List[Int] = 1.pure[List]
+
+  import cats.syntax.flatMap._
+  val oneOptionTransformed: Option[Int] = oneOption.flatMap(x => (x + 1).pure[Option])
+
+  import cats.syntax.functor._
+  val oneOptionMapped: Option[Int] = optionMonad.map(oneOption)(_ + 2)
+  val oneOptionMapped2: Option[Int] = oneOption.map(_ + 2)
+
+  // for comprehensions
+  val composedOptionFor = for {
+    one <- 1.pure[Option]
+    two <- 2.pure[Option]
+  } yield one + two
+
+  // Shorter version of getPairs
+  def getPairs2[M[_], A, B](ma: M[A], mb: M[B])(implicit monad: Monad[M]): M[(A, B)] =
+    ma.flatMap(a => mb.map(b => (a, b)))
+
+  def getPairsFor[M[_]: Monad, A, B](ma: M[A], mb: M[B]): M[(A, B)] = {
+    for {
+      a <- ma
+      b <- mb
+    } yield (a, b)
+  }
+
   def main(args: Array[String]): Unit = {
     println(listCombo)
     println(optionCombo)
@@ -99,6 +132,22 @@ object Monads {
     println(Await.result(getPairs(numberFuture, charFuture), 1.second))
 
     getPairs(numberFuture, charFuture).foreach(println)
+
+    println(oneOption)
+    println(oneList)
+
+    println(oneOptionTransformed)
+    println(oneOptionMapped)
+    println(oneOptionMapped2)
+    println(composedOptionFor)
+
+    println(getPairs2(numbersList, charsList))
+    println(getPairs2(numberOption, charOption))
+    getPairs2(numberFuture, charFuture).foreach(println)
+
+    println(getPairsFor(numbersList, charsList))
+    println(getPairsFor(numberOption, charOption))
+    getPairsFor(numberFuture, charFuture).foreach(println)
 
     System.exit(0)
   }
