@@ -93,7 +93,7 @@ object Monads {
   val oneOptionMapped2: Option[Int] = oneOption.map(_ + 2)
 
   // for comprehensions
-  val composedOptionFor = for {
+  val composedOptionFor: Option[Int] = for {
     one <- 1.pure[Option]
     two <- 2.pure[Option]
   } yield one + two

@@ -2,7 +2,8 @@ package part1recap
 
 object CatsIntro {
 
-  val aComparison = 2 == "Two" // This compiles. but will always be false
+  //noinspection ComparingUnrelatedTypes
+  val aComparison: Boolean = 2 == "Two" // This compiles. but will always be false
 
   // Hence Eq
 
@@ -14,7 +15,7 @@ object CatsIntro {
   import cats.instances.int._
 
   // Part 3 - use the type class API
-  val intEquality = Eq[Int]
+  val intEquality: Eq[Int] = Eq[Int]
 
   // Summoner pattern
   // object Eq {

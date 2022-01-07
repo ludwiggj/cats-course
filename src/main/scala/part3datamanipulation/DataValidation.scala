@@ -129,7 +129,7 @@ object DataValidation {
         Validated.fromOption(form.get(fieldName), List(s"The field $fieldName must be specified"))
 
       def nonBlank(value: String, fieldName: String): FormValidation[String] =
-        Validated.cond(!value.isEmpty, s"[$value]", List(s"The field $fieldName must not be blank"))
+        Validated.cond(value.nonEmpty, s"[$value]", List(s"The field $fieldName must not be blank"))
 
       def containsCharacter(value: String, fieldName: String, character: Char): FormValidation[String] =
         Validated.cond(value.contains(character), s"[$value]", List(s"The field $fieldName must contain a $character"))

@@ -7,6 +7,7 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 // Monad Transformers are not typeclasses
 // They are higher-kinded types for convenience over nested monadic values
 object MonadTransformers {
+  //noinspection NotImplementedCode,ScalaUnusedSymbol
   def sumAllOptions(values: List[Option[Int]]): Int = ???
 
   // option transformer

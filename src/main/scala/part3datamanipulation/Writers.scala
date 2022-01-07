@@ -1,5 +1,8 @@
 package part3datamanipulation
 
+import cats.Id
+import cats.data.WriterT
+
 import java.util.concurrent.Executors
 import scala.annotation.tailrec
 import scala.concurrent.duration.DurationInt
@@ -13,20 +16,20 @@ object Writers {
   val aWriter: Writer[List[String], Int] = Writer(List("Started something"), 45)
 
   // 2 - Manipulate with pure fp
-  val anIncreaseWriter = aWriter.map(_ + 1) // value increases, log stays the same
+  val anIncreaseWriter: WriterT[Id, List[String], Int] = aWriter.map(_ + 1) // value increases, log stays the same
 
-  val aLogWriter = aWriter.mapWritten(_ :+ "found somethin g interesting") // value stays the same, log changes
+  val aLogWriter: WriterT[Id, List[String], Int] = aWriter.mapWritten(_ :+ "found somethin g interesting") // value stays the same, log changes
 
-  val aWriterWithBoth = aWriter.bimap(_ :+ "found something interesting", _ + 1) // value and log both change
+  val aWriterWithBoth: WriterT[Id, List[String], Int] = aWriter.bimap(_ :+ "found something interesting", _ + 1) // value and log both change
 
   // value and log both change
-  val aWriterWithBoth2 = aWriter.mapBoth { (log, value) =>
+  val aWriterWithBoth2: WriterT[Id, List[String], Int] = aWriter.mapBoth { (log, value) =>
     // have access to both existing values
     (log :+ s"found something interesting, increasing value from $value", value + 1)
   }
 
-  val writerA = Writer(Vector("Log A1", "Log A2"), 10)
-  val writerB = Writer(Vector("Log B1"), 40)
+  val writerA: WriterT[Id, Vector[String], Int] = Writer(Vector("Log A1", "Log A2"), 10)
+  val writerB: WriterT[Id, Vector[String], Int] = Writer(Vector("Log B1"), 40)
 
   // Flatmap
 
@@ -34,7 +37,7 @@ object Writers {
 
   import cats.instances.vector._ // imports a Semigroup[Vector]
 
-  val compositeWriter = for {
+  val compositeWriter: WriterT[Id, Vector[String], Int] = for {
     va <- writerA
     vb <- writerB
   } yield va + vb
@@ -43,12 +46,12 @@ object Writers {
 
   import cats.instances.list._ // an implicit Monoid[List[Int]]
 
-  val anEmptyList = aWriter.reset // clear the logs, keep the value
+  val anEmptyList: WriterT[Id, List[String], Int] = aWriter.reset // clear the logs, keep the value
 
   // 3 - Dump either value or logs
-  val desiredValue = aWriter.value
+  val desiredValue: Id[Int] = aWriter.value
 
-  val log = aWriter.written
+  val log: Id[List[String]] = aWriter.written
 
   val (l, v) = aWriter.run
 
@@ -69,12 +72,13 @@ object Writers {
     else
       countAndLog(n - 1).bimap(_ :+ n.toString, _ => n)
 
+  //noinspection ScalaUnusedSymbol
   // This solution is not tail recursive
   def countAndLog2(n: Int): Writer[Vector[String], Int] =
     if (n <= 0)
       Writer(Vector("starting!"), 0)
     else
-      countAndLog2(n - 1).flatMap(- => Writer(Vector(s"$n"), n))
+      countAndLog2(n - 1).flatMap(_ => Writer(Vector(s"$n"), n))
 
   // Tail recursive - base case is a bit fiddly
   def countAndLogTailRec(n: Int): Writer[Vector[String], Int] = {

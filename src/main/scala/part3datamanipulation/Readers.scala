@@ -1,5 +1,7 @@
 package part3datamanipulation
 
+import cats.Id
+
 object Readers {
 
   /*
@@ -12,7 +14,9 @@ object Readers {
   case class Configuration(dbUsername: String, dbPassword: String, host: String, port: Int, nThreads: Int, emailReplyTo: String)
 
   case class DbConnection(username: String, password: String) {
+    //noinspection ScalaUnusedSymbol
     def getOrderStatus(orderId: Long): String = "dispatched" // select * from db table and return status of OrderId
+    //noinspection ScalaUnusedSymbol
     def getLastOrderId(username: String): Long = 542643 // select max(orderId) from table where username = username
   }
 
@@ -21,7 +25,7 @@ object Readers {
   }
 
   // bootstrap
-  val config = Configuration("daniel", "rockthejvm1!", "localhost", 1234, 8, "daniel@rockthejvm.com")
+  val config: Configuration = Configuration("daniel", "rockthejvm1!", "localhost", 1234, 8, "daniel@rockthejvm.com")
 
   // cats reader
   import cats.data.Reader
@@ -29,7 +33,7 @@ object Readers {
     conf.dbUsername, conf.dbPassword
   ))
 
-  val dbConn = dbReader.run(config)
+  val dbConn: Id[DbConnection] = dbReader.run(config)
 
   // Reader[I, O]
   val danielsOrderStatusReader: Reader[Configuration, String] = dbReader.map(

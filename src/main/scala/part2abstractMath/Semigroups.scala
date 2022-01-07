@@ -6,11 +6,11 @@ object Semigroups {
   import cats.Semigroup
   import cats.instances.int._
 
-  val naturalIntSemigroup = Semigroup[Int]
+  val naturalIntSemigroup: Semigroup[Int] = Semigroup[Int]
 
   import cats.instances.string._
 
-  val naturalStringSemigroup = Semigroup[String]
+  val naturalStringSemigroup: Semigroup[String] = Semigroup[String]
 
   def reduceInts(list: List[Int]): Int = list.reduce(naturalIntSemigroup.combine)
   def reduceStrings(list: List[String]): String = list.reduce(naturalStringSemigroup.combine)

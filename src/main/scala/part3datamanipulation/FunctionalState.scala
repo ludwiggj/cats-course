@@ -1,5 +1,8 @@
 package part3datamanipulation
 
+import cats.Eval
+import cats.data.IndexedStateT
+
 object FunctionalState {
 
   import cats.data.State
@@ -16,40 +19,40 @@ object FunctionalState {
   val secondComputation = s"Multiplied by 5, obtained $a"
 
   // pure FP with states
-  val firstTransformation = State((s: Int) => {
-    val newS = s + 1;
+  val firstTransformation: State[Int, String] = State((s: Int) => {
+    val newS = s + 1
     (newS, s"Added 1, obtained $newS")
   })
-  val secondTransformation = State((s: Int) => {
-    val newS = s * 5;
+  val secondTransformation: State[Int, String] = State((s: Int) => {
+    val newS = s * 5
     (newS, s"Multiplied by 5, obtained $newS")
   })
 
-  val compositeTransformation = firstTransformation.flatMap { firstResult =>
+  val compositeTransformation: IndexedStateT[Eval, Int, Int, (String, String)] = firstTransformation.flatMap { firstResult =>
     secondTransformation.map(secondResult => (firstResult, secondResult))
   }
 
   // Why do we use state? Let's try and compose functions
-  val f1 = (s: Int) => {
-    val newS = s + 1;
+  val f1: Int => (Int, String) = (s: Int) => {
+    val newS = s + 1
     (newS, s"Added 1, obtained $newS")
   }
-  val f2 = (s: Int) => {
-    val newS = s * 5;
+  val f2: Int => (Int, String) = (s: Int) => {
+    val newS = s * 5
     (newS, s"Multiplied by 5, obtained $newS")
   }
-  val f3 = (s: Int) => {
-    val newS = s - 12;
+  val f3: Int => (Int, String) = (s: Int) => {
+    val newS = s - 12
     (newS, s"Subtracted 12, obtained $newS")
   }
 
   // Each composition...
-  val f1f2 = f1.andThen {
+  val f1f2: Int => (String, (Int, String)) = f1.andThen {
     case (state, res) => (res, f2(state))
   }
 
   // ... gets more complicated!
-  val f1f2f3 = f1.andThen {
+  val f1f2f3: Int => (String, String, (Int, String)) = f1.andThen {
     case (state, res1) => (res1, f2(state))
   }.andThen {
     case (res1, (state, res2)) => (res1, res2, f3(state))
@@ -94,7 +97,7 @@ object FunctionalState {
   }
 
   // above methods available via following import
-  import cats.data.State._
+  // import cats.data.State._
 
   val program: State[Int, (Int, Int, Int)] = for {
     a <- get[Int]
