@@ -31,8 +31,9 @@ object S2_Applicatives {
   import cats.data.Validated
   type ErrorsOr[T] = Validated[List[String], T]
 
-  val aValidValue: ErrorsOr[Int] = Validated.valid(42) // "pure" valid is like a pure method, ErrorsOr is the wrapper type
-  val aModifiedValue: Validated[List[String], Int] = aValidValue.map(_ + 1)          // map
+  val aValidValue: ErrorsOr[Int] = Validated.valid(42)                      // "pure" valid is like a pure method
+                                                                            // ErrorsOr is the wrapper type
+  val aModifiedValue: Validated[List[String], Int] = aValidValue.map(_ + 1) // map
 
   // Validated is not a monad, but is a candidate for Applicative as its strongest typeclass
   // Cats can construct an Applicative, where pure is translated into valid i.e. in Validated.scala:
@@ -64,7 +65,7 @@ object S2_Applicatives {
   }
 
   // Applicatives have the ap method defined above i.e.
-  def productWithApplicatives2[W[_], A, B](wa: W[A], wb: W[B])(implicit applicative: Applicative[W]): W[(A, B)] = {
+  def productWithApplicatives3[W[_], A, B](wa: W[A], wb: W[B])(implicit applicative: Applicative[W]): W[(A, B)] = {
     val functionWrapper: W[B => (A, B)] = applicative.map(wa)(a => (b: B) => (a, b))
     applicative.ap(functionWrapper)(wb)
   }
@@ -83,6 +84,7 @@ object S2_Applicatives {
       ____________             __________       ______________
      |           |            |         |      |             |
      | Semigroup |            | Functor |      | Semigroupal |
+     |           |            |   map   |      |   product   |
      |___________|            |_________|      |_____________|
           ^                       ^                    ^
           |                       |____________________|
@@ -90,6 +92,7 @@ object S2_Applicatives {
       ____________                     ______________
      |           |                    |             |
      |  Monoid   |                    | Applicative |
+     |           |                    |  ap  pure   |
      |___________|                    |_____________|
                                             ^
                                             |

@@ -74,13 +74,12 @@ object S1_Semigroupals {
 
   val validatedSemigroupal: Semigroupal[ErrorsOr] = Semigroupal[ErrorsOr] // requires implicit Semigroup[List[_]]
 
-  val invalidCombination: ErrorsOr[(Nothing, Nothing)] = validatedSemigroupal.product(
-    Validated.invalid(List("something wrong", "something else wrong")),
-    Validated.invalid(List("this isn't right"))
+  val invalidCombination: ErrorsOr[(Int, Int)] = validatedSemigroupal.product(
+    Validated.invalid[List[String], Int](List("something wrong", "something else wrong")),
+    Validated.invalid[List[String], Int](List("this isn't right"))
   )
 
   // if combine with monadic type e.g. either get a different result
-
   type EitherErrorsOr[T] = Either[List[String], T]
   import cats.instances.either._ // implicit Monad[Either]
   val eitherSemigroupal: Semigroupal[EitherErrorsOr] = Semigroupal[EitherErrorsOr]
@@ -118,6 +117,7 @@ object S1_Semigroupals {
      ____________             __________       ______________
     |           |            |         |      |             |
     | Semigroup |            | Functor |      | Semigroupal |
+    |           |            |   map   |      |   product   |
     |___________|            |_________|      |_____________|
          ^                       ^                    ^
          |                       |____________________|
