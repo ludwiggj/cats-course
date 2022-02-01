@@ -117,7 +117,7 @@ object S1_Semigroupals {
      ____________             __________       ______________
     |           |            |         |      |             |
     | Semigroup |            | Functor |      | Semigroupal |
-    |           |            |   map   |      |   product   |
+    |  combine  |            |   map   |      |   product   |
     |___________|            |_________|      |_____________|
          ^                       ^                    ^
          |                       |____________________|
@@ -125,6 +125,7 @@ object S1_Semigroupals {
     _____________                       ________
     |           |                      |       |
     |  Monoid   |                      | Monad |
+    |  empty    |                      |       |
     |___________|                      |_______|
  */
 }

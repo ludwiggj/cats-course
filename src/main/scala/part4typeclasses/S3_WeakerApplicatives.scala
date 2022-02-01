@@ -61,7 +61,7 @@ object S3_WeakerApplicatives {
       ____________             __________       ______________
      |           |            |         |      |             |
      | Semigroup |            | Functor |      | Semigroupal |
-     |           |            |   map   |      |   product   |
+     |  combine  |            |   map   |      |   product   |
      |___________|            |_________|      |_____________|
           ^                       ^                    ^
           |                       |____________________|
@@ -69,7 +69,7 @@ object S3_WeakerApplicatives {
       ____________                     ______________
      |           |                    |             |
      |  Monoid   |                    |    Apply    |
-     |           |                    |     ap      |
+     |  empty    |                    |     ap      |
      |___________|                    |_____________| 
                                             ^
                                             |

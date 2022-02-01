@@ -58,7 +58,7 @@ object S4_WeakerMonads {
       ____________             __________       ______________
      |           |            |         |      |             |
      | Semigroup |            | Functor |      | Semigroupal |
-     |           |            |   map   |      |   product   |
+     |  combine  |            |   map   |      |   product   |
      |___________|            |_________|      |_____________|
           ^                       ^                    ^
           |                       |____________________|
@@ -66,7 +66,7 @@ object S4_WeakerMonads {
       ____________                     ______________
      |           |                    |             |
      |  Monoid   |                    |    Apply    |
-     |           |                    |     ap      |
+     |  empty    |                    |     ap      |
      |___________|                    |_____________|
                                             ^
                                             |

@@ -84,7 +84,7 @@ object S2_Applicatives {
       ____________             __________       ______________
      |           |            |         |      |             |
      | Semigroup |            | Functor |      | Semigroupal |
-     |           |            |   map   |      |   product   |
+     |  combine  |            |   map   |      |   product   |
      |___________|            |_________|      |_____________|
           ^                       ^                    ^
           |                       |____________________|
@@ -92,7 +92,7 @@ object S2_Applicatives {
       ____________                     ______________
      |           |                    |             |
      |  Monoid   |                    | Applicative |
-     |           |                    |  ap  pure   |
+     |  empty    |                    |  ap  pure   |
      |___________|                    |_____________|
                                             ^
                                             |
