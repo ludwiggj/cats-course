@@ -3,8 +3,7 @@ package part4typeclasses
 import cats.{Applicative, Monad}
 
 import java.util.concurrent.Executors
-import scala.concurrent.duration.DurationInt
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 object S5_HandlingErrors {
@@ -34,8 +33,9 @@ object S5_HandlingErrors {
                                   // from package cats.instances.EitherInstances
 
   type ErrorOr[A] = Either[String, A]
-  val monadErrorEither = MonadError[ErrorOr, String] // Error type of MonadError must match error
-                                                     //  type of ErrorOr i.e. String
+
+  // Error type of MonadError must match error type of ErrorOr i.e. String
+  val monadErrorEither: MonadError[ErrorOr, String] = MonadError[ErrorOr, String]
 
   // Cats provides an implicit called catsStdInstancesForEither to above declaration i.e.
   //   val monadErrorEither = MonadError[ErrorOr, String](catsStdInstancesForEither)
@@ -122,7 +122,7 @@ object S5_HandlingErrors {
   // implicit def catsDataApplicativeErrorForValidated[List[String]]: ApplicativeError[Validated[List[String], *], List[String]]
   //
   // implicit def catsDataApplicativeErrorForValidated[List[String]]: ApplicativeError[ErrorsOr, List[String]]
-  val applErrorVal = ApplicativeError[ErrorsOr, List[String]]
+  val applErrorVal: ApplicativeError[ErrorsOr, List[String]] = ApplicativeError[ErrorsOr, List[String]]
 
   // ApplicativeError has access to:
   //   pure
@@ -155,7 +155,7 @@ object S5_HandlingErrors {
   // recoverWith is equivalent of handleErrorWith
   // implicit is catsDataApplicativeErrorForValidated
   val recoveredWithError: ErrorsOr[Int] = extendedError.recoverWith {
-    case _ => 43.pure
+    case _ => 43.pure[ErrorsOr]
   }
 
   // Extension methods - MonadError

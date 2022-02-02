@@ -38,7 +38,7 @@ object S3_WeakerApplicatives {
   import cats.Apply
   import cats.instances.option._ // implicit Apply[Option]
 
-  val applyOption = Apply[Option]
+  val applyOption: Apply[Option] = Apply[Option]
 
   // Note: Rarely used in this way
   val funcApp: Option[Int] = applyOption.ap(Some((x: Int) => x + 1))(Some(4))
@@ -46,9 +46,9 @@ object S3_WeakerApplicatives {
   // Much more common is the use of extension methods to extract and combine tuples
   import cats.syntax.apply._ // apply extension methods
 
-  val tupleOfOptions = (Option(1), Option(2), Option(3))
-  val optionOfTuple = tupleOfOptions.tupled
-  val sumOption = tupleOfOptions.mapN(_ + _ + _)
+  val tupleOfOptions: (Option[Int], Option[Int], Option[Int]) = (Option(1), Option(2), Option(3))
+  val optionOfTuple: Option[(Int, Int, Int)] = tupleOfOptions.tupled
+  val sumOption: Option[Int] = tupleOfOptions.mapN(_ + _ + _)
 
   def main(args: Array[String]): Unit = {
     println(funcApp)
